@@ -94,6 +94,12 @@ func createRegex(src *[]string, cache *RegexCache, res *[]*regexp.Regexp) {
 		if found {
 			*res = append(*res, val)
 		} else {
+			if s[0] != '^' { // match from start
+				s = "^" + s
+			}
+			if s[len(s)-1] != '$' { // match untill end
+				s = s + "$"
+			}
 			val := regexp.MustCompile(s)
 			cache.Set(s, val)
 			*res = append(*res, val)

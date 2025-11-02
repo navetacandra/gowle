@@ -21,6 +21,9 @@ func (cache *RegexCache) Get(key string) (*regexp.Regexp, bool) {
 }
 
 func (cache *RegexCache) Set(key string, regex *regexp.Regexp) {
+	if cache.Size == 0 {
+		return
+	}
 	if oldKey := cache.Keys[cache.Cursor]; oldKey != "" {
 		delete(cache.Values, cache.Keys[cache.Cursor])
 	}
@@ -55,6 +58,7 @@ func (config *GowleConfig) Load() (err error) {
 	if err != nil {
 		return err
 	}
+	defer file.Close()
 
 	sc := bufio.NewScanner(file)
 	for sc.Scan() {
@@ -89,21 +93,25 @@ func (config *GowleConfig) Load() (err error) {
 }
 
 func createRegex(src *[]string, cache *RegexCache, res *[]*regexp.Regexp) {
-	for _, s := range *src {
-		val, found := cache.Get(s)
-		if found {
+	for _, raw := range *src {
+		if val, found := cache.Get(raw); found {
 			*res = append(*res, val)
-		} else {
-			if s[0] != '^' { // match from start
-				s = "^" + s
-			}
-			if s[len(s)-1] != '$' { // match untill end
-				s = s + "$"
-			}
-			val := regexp.MustCompile(s)
-			cache.Set(s, val)
-			*res = append(*res, val)
+			continue
 		}
+
+		s := raw
+		if s[0] != '^' { // match from start
+			s = "^" + s
+		}
+		if s[len(s)-1] != '$' { // match untill end
+			s = s + "$"
+		}
+		s = strings.ReplaceAll(s, ".", `\.`) // replace to regex friendly
+		s = strings.ReplaceAll(s, "*", `.*`) // replace to regex friendly
+
+		val := regexp.MustCompile(s)
+		cache.Set(raw, val)
+		*res = append(*res, val)
 	}
 }
 

@@ -12,13 +12,15 @@ type Worker struct {
 	onStart   func()
 	onStop    func()
 	onLoop    func()
+	debounce  time.Duration
 }
 
-func NewWorker(onStart func(), onLoop func(), onStop func()) *Worker {
+func NewWorker(onStart func(), onLoop func(), onStop func(), debounce time.Duration) *Worker {
 	return &Worker{
-		onStart: onStart,
-		onStop:  onStop,
-		onLoop:  onLoop,
+		onStart:  onStart,
+		onStop:   onStop,
+		onLoop:   onLoop,
+		debounce: debounce,
 	}
 }
 
@@ -26,6 +28,7 @@ func (w *Worker) run() {
 	defer w.wg.Done()
 	w.onStart()
 	for {
+		time.Sleep(w.debounce)
 		w.mu.Lock()
 
 		if !w.isRunning { // clean-up process
@@ -36,7 +39,6 @@ func (w *Worker) run() {
 
 		w.onLoop()
 		w.mu.Unlock()
-		time.Sleep(800 * time.Millisecond)
 	}
 }
 

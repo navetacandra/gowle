@@ -23,11 +23,11 @@ done
 
 if $tinygo; then
     echo "========= Build using TinyGo ========="
-    build_tools="tinygo build"
+    build_tools="tinygo build -no-debug"
     filename="tinygowle"
 else
     echo "========= Build using Go ========="
-    build_tools="go build -ldflags=\"-s -w\" -trimpath"
+    build_tools="go build -ldflags=\"-s -w\" -trimpath -gcflags=\"-m\""
     filename="gowle"
 fi
 

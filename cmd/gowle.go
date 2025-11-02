@@ -1,7 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"github.com/navetacandra/gowle/internal/config"
+)
 
 func main() {
-	fmt.Println("Hello, world!")
+	appConfig := config.GowleConfig{}
+	appConfig.Load()
 }

@@ -36,8 +36,9 @@ func (cache *RegexCache) Set(key string, regex *regexp.Regexp) {
 type GowleConfig struct {
 	Watch      []string
 	Ignore     []*regexp.Regexp
-	regexCache RegexCache
 	Command    string
+	Cwd        string
+	regexCache RegexCache
 }
 
 func (config *GowleConfig) Load() (err error) {
@@ -59,6 +60,8 @@ func (config *GowleConfig) Load() (err error) {
 		return err
 	}
 	defer file.Close()
+
+	config.Cwd = cwd
 
 	sc := bufio.NewScanner(file)
 	for sc.Scan() {

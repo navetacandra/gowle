@@ -27,8 +27,8 @@ if $tinygo; then
     filename="tinygowle"
 else
     echo "========= Build using Go ========="
-    # build_tools="go build -ldflags=\"-s -w\" -trimpath -gcflags=\"-m\""
-    build_tools="~/go/bin/go1.17 build -ldflags=\"-s -w\" -trimpath -gcflags=\"-m\""
+    build_tools="go build -ldflags=\"-s -w\" -trimpath -gcflags=\"-m\""
+    build_tools="go1.17 build -ldflags=\"-s -w\" -trimpath -gcflags=\"-m\""
     filename="gowle"
 fi
 

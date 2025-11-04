@@ -56,7 +56,7 @@ func main() {
 				}
 			}
 
-			// TODO: Implement action on change
+			fmt.Println("[GOWLE] Reloading.")
 			if err := appProcess.Stop(); err != nil {
 				fmt.Printf("[GOWLE] Failed to stop child process: %v\n Try to restart with command 'rs'\n", err)
 			}
